@@ -1,0 +1,22 @@
+# generate dataset
+PYTHONPATH=src python -m approach2_inverse_pinn.generate_dataset
+
+#Plot FRF
+PYTHONPATH=src python -m approach2_inverse_pinn.plot_frf
+
+#Train PINN
+PYTHONPATH=src python -m approach2_inverse_pinn.train
+
+
+
+sample run
+PYTHONPATH=src python - <<EOF
+import torch
+from approach2_inverse_pinn.data_io import load_frf_dataset_csv
+
+device = torch.device("cpu")
+omega, x, Wr, Wi = load_frf_dataset_csv("PATH/TO/YOUR.csv", device)
+
+print(omega.shape, x.shape, Wr.shape, Wi.shape)
+EOF
+
