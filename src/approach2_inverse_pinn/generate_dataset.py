@@ -3,10 +3,14 @@ import os
 import numpy as np
 import pandas as pd
 
-from approach2_inverse_pinn.beam_theories2 import Euler_beam
+#from approach2_inverse_pinn.beam_theories2 import Euler_beam
+from .beam_theories2 import Euler_beam
+from .experiment_config import EXP
+
+
 
 def generate_frf_dataset_csv(
-    out_csv="data/processed/frf_dataset.csv",
+    out_csv="data/processed/frf_dataset_2.csv",
     # beam params
     l=200/1000,
     b=10/1000,
@@ -63,15 +67,31 @@ def generate_frf_dataset_csv(
     print(f"Saved dataset with {len(rows)} rows -> {out_csv}")
 
 if __name__ == "__main__":
+    # Default sensor positions: tip only if not provided
+    x_points = EXP.frf.x_points
+    if x_points is None:
+        x_points = (EXP.beam.L,)
+
     generate_frf_dataset_csv(
-        out_csv="data/processed/frf_dataset.csv",
-        f_min=1.0,
-        f_max=1000.0,
-        n_freq=1000,
-        x_points=None,     # defaults to tip
+        out_csv=str(EXP.paths.dataset_csv),
+
+        # geometry/material (known for synthetic dataset)
+        l=EXP.beam.L,
+        b=EXP.beam.b,
+        h=EXP.beam.h,
+        rho=EXP.beam.rho,
+
+        # sampling
+        f_min=EXP.frf.f_min_hz,
+        f_max=EXP.frf.f_max_hz,
+        n_freq=EXP.frf.n_freq,
+        x_points=x_points,
+
+        # keep your current behavior
         use_ideal=False,
         add_noise_std=0.0
     )
+
 
 
 

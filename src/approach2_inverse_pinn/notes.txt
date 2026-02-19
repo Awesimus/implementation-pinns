@@ -1,0 +1,36 @@
+✏️ inputs
+x = spatial coordinate (meters)
+omega = angular frequency (rad/s)
+
+learned during training:
+E0, η, kx, kφ, F
+
+python -m src.approach2_inverse_pinn.generate_dataset
+python -m src.approach2_inverse_pinn.train
+
+✏️ nx, nw : collocation points
+Nw	How many frequencies physics is enforced on
+Nx	How many spatial points physics is enforced on
+If training unstable → increase Nx
+If frequency behaviour badly learned → increase Nw
+If too slow → decrease them
+
+✏️ if actual csv, we will need:
+x (sensor location in meters; if only tip, it’s constant L)
+f_hz
+V_real
+V_imag
+
+#experiment
+From measurement you typically have:
+
+frequency vector 𝑓(or 𝜔)
+complex velocity FRF 𝑉(𝜔)
+V(ω) at one or more positions 𝑥
+known geometry 𝐿,𝑏,ℎ density 𝜌
+known boundary setup (tip mass, springs), at least approximately
+
+So your input file (CSV) for a real run would still look like your synthetic one:
+x (sensor position; for a single sensor this is a constant column)
+f_hz
+fV_real, V_imag

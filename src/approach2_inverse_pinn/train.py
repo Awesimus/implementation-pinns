@@ -1,19 +1,24 @@
 # src/approach2_inverse_pinn/train.py
 import torch
 
-from beam_model import BeamModel
-from approach2_inverse_pinn.pinn_model import PINN
-from approach2_inverse_pinn.physics import inverse_loss_material
-from approach2_inverse_pinn.data_io import load_frf_dataset_csv
+from src.beam_model import BeamModel
+from .pinn_model import PINN
+from .physics import inverse_loss_material
+from .data_io import load_frf_dataset_csv
+from .experiment_config import EXP
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ---- known beam constants ----
-beam = BeamModel(L=200/1000, b=10/1000, h=1/1000, rho=2700.0)
+# beam = BeamModel(L=200/1000, b=10/1000, h=1/1000, rho=2700.0)
+beam = BeamModel(L=EXP.beam.L, b=EXP.beam.b, h=EXP.beam.h, rho=EXP.beam.rho)
 pinn = PINN().to(device)
 
 # ---- known magnet mass at tip ----
-m_tip = torch.tensor([0.01], dtype=torch.float32, device=device)  # TODO: set your real magnet mass (kg)
+# m_tip = torch.tensor([0.01], dtype=torch.float32, device=device)  # TODO: set your real magnet mass (kg)
+m_tip = torch.tensor([0.01], dtype=torch.float32, device=device)
+
 
 # ---- trainable parameters (raw) ----
 E0_raw   = torch.nn.Parameter(torch.tensor([1e10], dtype=torch.float32, device=device))
@@ -25,18 +30,26 @@ kphi_raw = torch.nn.Parameter(torch.tensor([10.0], dtype=torch.float32, device=d
 Fr_raw = torch.nn.Parameter(torch.tensor([1.0], dtype=torch.float32, device=device))
 Fi_raw = torch.nn.Parameter(torch.tensor([0.0], dtype=torch.float32, device=device))
 
+# optimizer = torch.optim.Adam(
+#     list(pinn.parameters()) + [E0_raw, eta_raw, kx_raw, kphi_raw, Fr_raw, Fi_raw],
+#     lr=1e-3
+# )
 optimizer = torch.optim.Adam(
     list(pinn.parameters()) + [E0_raw, eta_raw, kx_raw, kphi_raw, Fr_raw, Fi_raw],
-    lr=1e-3
+    lr=EXP.lr
 )
 
 # ----- Collocation sampling (x, omega) -----
-f_min_hz, f_max_hz = 1.0, 1000.0
+# f_min_hz, f_max_hz = 1.0, 1000.0
+f_min_hz, f_max_hz = EXP.frf.f_min_hz, EXP.frf.f_max_hz
 omega_min = 2.0 * torch.pi * torch.tensor([f_min_hz], device=device)
 omega_max = 2.0 * torch.pi * torch.tensor([f_max_hz], device=device)
 
-Nx = 30
-Nw = 25
+# Nx = 30
+# Nw = 25
+Nx = EXP.Nx
+Nw = EXP.Nw
+
 
 x = torch.linspace(0.0, beam.L, Nx, device=device).view(-1, 1)
 omega = torch.linspace(omega_min.item(), omega_max.item(), Nw, device=device).view(-1, 1)
@@ -46,10 +59,12 @@ x_c = xx.reshape(-1, 1).clone().detach().requires_grad_(True)
 omega_c = ww.reshape(-1, 1).clone().detach()
 
 # ----- Load VELOCITY data -----
-CSV_PATH = "data/processed/frf_dataset.csv"
+# CSV_PATH = "data/processed/frf_dataset.csv"
+CSV_PATH = str(EXP.paths.dataset_csv)
 v_data = load_frf_dataset_csv(CSV_PATH, device=device)
 
-epochs = 2000
+# epochs = 2000
+epochs = EXP.epochs
 for epoch in range(epochs):
     optimizer.zero_grad()
 

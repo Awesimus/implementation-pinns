@@ -3,7 +3,9 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from approach2_inverse_pinn.beam_theories2 import Euler_beam
+#from approach2_inverse_pinn.beam_theories2 import Euler_beam
+from .beam_theories2 import Euler_beam
+
 
 def plot_single_frf(
     l=200/1000,
