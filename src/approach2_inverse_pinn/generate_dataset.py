@@ -10,7 +10,7 @@ from .experiment_config import EXP
 
 
 def generate_frf_dataset_csv(
-    out_csv="data/processed/frf_dataset_2.csv",
+    out_csv="data/processed/frf_dataset_synthetic.csv", #TO-DO : code the export destination of experimental data properly.
     # beam params
     l=200/1000,
     b=10/1000,
@@ -73,7 +73,9 @@ if __name__ == "__main__":
         x_points = (EXP.beam.L,)
 
     generate_frf_dataset_csv(
-        out_csv=str(EXP.paths.dataset_csv),
+        #out_csv=str(EXP.paths.dataset_csv)
+        out_csv="data/processed/frf_dataset.csv",
+        
 
         # geometry/material (known for synthetic dataset)
         l=EXP.beam.L,

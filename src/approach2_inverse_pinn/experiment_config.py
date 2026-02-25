@@ -12,16 +12,16 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 @dataclass(frozen=True)
 class Paths:
-    dataset_csv: Path = PROJECT_ROOT / "data" / "processed" / "frf_dataset.csv"
+    dataset_csv: Path = PROJECT_ROOT / "data" / "processed" / "frf_dataset_exp.csv"
     outputs_dir: Path = PROJECT_ROOT / "outputs"
 
 
 @dataclass(frozen=True)
 class Beam:
-    L: float = 200 / 1000   # meters
-    b: float = 10 / 1000    # meters
-    h: float = 1 / 1000     # meters
-    rho: float = 2700.0     # kg/m^3
+    L: float = 126.06 / 1000   # meters
+    b: float = 10.13 / 1000    # meters
+    h: float = 0.95 / 1000     # meters
+    rho: float = 8216.0     # kg/m^3
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,7 @@ class Experiment:
     frf: FRF = FRF()
 
     # Known experiment constants
-    m_tip_kg: float = 0.01
+    m_tip_kg: float = 0
 
     # Training (only “known knobs” you may want centralized)
     Nx: int = 30

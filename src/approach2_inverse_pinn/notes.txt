@@ -5,8 +5,16 @@ omega = angular frequency (rad/s)
 learned during training:
 E0, η, kx, kφ, F
 
+🟢 runs:
 python -m src.approach2_inverse_pinn.generate_dataset
 python -m src.approach2_inverse_pinn.train
+python -m src.approach2_inverse_pinn.inspect_npy
+python -m src.approach2_inverse_pinn.npy_to_csv
+
+⭐️ to generate csv from experimental data, run the file npy_to_csv.py 
+
+‼️ important code changes:
+experiment_config.py is making things complicated... remodify the code to better handle files and import.
 
 ✏️ nx, nw : collocation points
 Nw	How many frequencies physics is enforced on
