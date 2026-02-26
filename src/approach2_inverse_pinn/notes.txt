@@ -1,3 +1,5 @@
+try to train model via google colab.
+
 ✏️ inputs
 x = spatial coordinate (meters)
 omega = angular frequency (rad/s)
